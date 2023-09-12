@@ -6,7 +6,12 @@ from apps.common.models import BaseModel
 
 
 class Profile(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_profile", verbose_name=_("User"))
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="user_profile",
+        verbose_name=_("User"),
+    )
     full_name = models.CharField(max_length=256, null=True, blank=True, verbose_name=_("Full name"))
     jshshir = models.IntegerField(null=True, blank=True, verbose_name=_("Jshshir"))
     password_seria = models.CharField(max_length=9, null=True, blank=True, verbose_name=_("Password Seria"))
@@ -48,7 +53,10 @@ class SocialNetwork(BaseModel):
         verbose_name=_("Social Network Name"),
     )
     profile = models.ForeignKey(
-        "user.Profile", on_delete=models.CASCADE, related_name="social_network", verbose_name=_("Profile")
+        "user.Profile",
+        on_delete=models.CASCADE,
+        related_name="social_network",
+        verbose_name=_("Profile"),
     )
     link = models.CharField(verbose_name=_("Link"))
 
@@ -73,10 +81,16 @@ class DocumentName(BaseModel):
 
 class Document(BaseModel):
     profile = models.ForeignKey(
-        "user.Profile", on_delete=models.CASCADE, related_name="documents", verbose_name=_("Profile")
+        "user.Profile",
+        on_delete=models.CASCADE,
+        related_name="documents",
+        verbose_name=_("Profile"),
     )
     name = models.ForeignKey(
-        "user.DocumentName", on_delete=models.CASCADE, related_name="documents", verbose_name=_("Name")
+        "user.DocumentName",
+        on_delete=models.CASCADE,
+        related_name="documents",
+        verbose_name=_("Name"),
     )
     file = models.FileField(upload_to="users/documents", null=True, blank=True, verbose_name=_("File"))
 

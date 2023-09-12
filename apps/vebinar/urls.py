@@ -1,6 +1,9 @@
 from django.urls import path
 
-from apps.vebinar.views import ComplainCreateView, UserVebinarSearchHistoryDeleteView, UserVebinarSearchHistoryView, VebinarDetailView, VebinarListView
+from apps.vebinar.views import (ComplainCreateView,
+                                UserVebinarSearchHistoryDeleteView,
+                                UserVebinarSearchHistoryView,
+                                VebinarDetailView, VebinarListView)
 
 urlpatterns = [
     path("vebinars/", VebinarListView.as_view(), name="vebinar-list"),
