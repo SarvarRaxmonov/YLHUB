@@ -8,6 +8,7 @@ from .schema import swagger_urlpatterns
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("vebinars/", include("apps.vebinar.urls")),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 urlpatterns += swagger_urlpatterns
