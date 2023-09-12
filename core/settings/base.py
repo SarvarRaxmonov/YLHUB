@@ -50,6 +50,7 @@ CUSTOM_APPS = [
     "apps.vebinar",
     "apps.student_test",
     "apps.library",
+    "apps.user",
 ]
 
 THIRD_PARTY_APPS = [
