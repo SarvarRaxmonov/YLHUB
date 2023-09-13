@@ -9,6 +9,7 @@ urlpatterns = [
     path("ckeditor/", include("ckeditor_uploader.urls")),
     path("admin/", admin.site.urls),
     path("vebinars/", include("apps.vebinar.urls")),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 urlpatterns += swagger_urlpatterns
