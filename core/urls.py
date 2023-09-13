@@ -6,6 +6,7 @@ from django.urls import include, path
 from .schema import swagger_urlpatterns
 
 urlpatterns = [
+    path("ckeditor/", include("ckeditor_uploader.urls")),
     path("admin/", admin.site.urls),
     path("vebinars/", include("apps.vebinar.urls")),
 ]
