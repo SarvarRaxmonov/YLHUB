@@ -1,8 +1,10 @@
 from itertools import chain
 
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Announcement, News, Poll
+from .models import Announcement, News, Poll, PollChoice, UserChoice
 from .serializers import (AnnouncementDetailSerializer, NewsDetailSerializer,
                           NewsSerializer, PollDetailSerializer)
 
@@ -39,3 +41,20 @@ class ContentDetailAPIView(generics.RetrieveAPIView):
             self.queryset = Poll.objects.filter(pk=pk)
             self.serializer_class = PollDetailSerializer
         return super().get_queryset()
+
+
+class CreateChoiceAPIView(APIView):
+    def post(self, request, pk):
+
+        try:
+            curr_choice = PollChoice.objects.get(id=pk)
+            poll = curr_choice.poll
+            for choice in poll.choices.all():
+                if choice.user_choice.filter(user=request.user).exists():
+                    return Response({"message": "You can only answer once."}, status=status.HTTP_400_BAD_REQUEST)
+            UserChoice.objects.create(user=request.user, choice_id=pk)
+            return Response({"message": "Poll choice created successfully"}, status=status.HTTP_201_CREATED)
+        except PollChoice.DoesNotExist:
+            return Response({"message": "Poll Choice does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
