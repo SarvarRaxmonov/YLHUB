@@ -20,7 +20,13 @@ class Category(BaseModel):
 class News(BaseModel):
     title = models.CharField(max_length=250, null=True, verbose_name=_("Title"))
     image = models.ImageField(upload_to="main/blog", null=True, blank=True, verbose_name=_("Image"))
-    category = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Category"))
+    category = models.ForeignKey(
+        "Category",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Category"),
+    )
     content = RichTextUploadingField(verbose_name=_("Content"))
 
     def __str__(self):
@@ -60,7 +66,12 @@ class Poll(BaseModel):
 
 class PollChoice(BaseModel):
     name = models.CharField(max_length=250, null=True, verbose_name=_("Name"))
-    poll = models.ForeignKey("main.Poll", on_delete=models.CASCADE, related_name="choices", verbose_name=_("Poll"))
+    poll = models.ForeignKey(
+        "main.Poll",
+        on_delete=models.CASCADE,
+        related_name="choices",
+        verbose_name=_("Poll"),
+    )
 
     def __str__(self):
         return self.name
@@ -72,11 +83,17 @@ class PollChoice(BaseModel):
 
 class UserChoice(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="choices", verbose_name=_("User"))
-    choice = models.ForeignKey("main.PollChoice", on_delete=models.CASCADE, related_name="choices", verbose_name=_("Choice"))
+    choice = models.ForeignKey(
+        "main.PollChoice",
+        on_delete=models.CASCADE,
+        related_name="choices",
+        verbose_name=_("Choice"),
+    )
 
     def __str__(self):
         return self.user.username
 
     class Meta:
+        unique_together = ("user", "choice")
         verbose_name = _("User Choice")
         verbose_name_plural = _("User Choices")

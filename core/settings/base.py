@@ -52,6 +52,8 @@ CUSTOM_APPS = [
     "apps.library",
     "apps.user",
     "apps.main",
+    "apps.notification",
+    "apps.cource",
 ]
 
 THIRD_PARTY_APPS = [
@@ -62,7 +64,6 @@ THIRD_PARTY_APPS = [
     "ckeditor_uploader",
     "debug_toolbar",
     "django_filters",
-
 ]
 
 
@@ -206,7 +207,14 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CKEDITOR_CONFIGS = {
     "default": {
         "toolbar": "Custom",
-        "toolbar_Custom": [["Bold", "Italic", "Underline"], ["NumberedList", "BulletedList", "Blockquote"], ["Link", "Unlink"], ["RemoveFormat", "Source"]],
+        "toolbar_Custom": (
+            [
+                ["Bold", "Italic", "Underline"],
+                ["NumberedList", "BulletedList", "Blockquote"],
+                ["Link", "Unlink"],
+                ["RemoveFormat", "Source"],
+            ]
+        ),
         "width": "100%",
         "height": 300,
         "filebrowserUploadUrl": "/ckeditor/upload/",
@@ -217,4 +225,3 @@ CKEDITOR_UPLOAD_PATH = "content/ckeditor/"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
