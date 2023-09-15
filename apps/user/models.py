@@ -12,16 +12,32 @@ class Profile(BaseModel):
         related_name="user_profile",
         verbose_name=_("User"),
     )
-    full_name = models.CharField(max_length=256, null=True, blank=True, verbose_name=_("Full name"))
+    full_name = models.CharField(
+        max_length=256, null=True, blank=True, verbose_name=_("Full name")
+    )
     jshshir = models.IntegerField(null=True, blank=True, verbose_name=_("Jshshir"))
-    password_seria = models.CharField(max_length=9, null=True, blank=True, verbose_name=_("Password Seria"))
+    password_seria = models.CharField(
+        max_length=9, null=True, blank=True, verbose_name=_("Password Seria")
+    )
     birth_date = models.DateField(null=True, blank=True, verbose_name=_("Birth Date"))
-    nation = models.CharField(max_length=32, null=True, blank=True, verbose_name=_("Nation"))
-    education = models.CharField(max_length=32, null=True, blank=True, verbose_name=_("Education"))
-    education_place = models.CharField(max_length=256, null=True, blank=True, verbose_name=_("Education place"))
-    work_place = models.CharField(max_length=256, null=True, blank=True, verbose_name=_("Work place"))
-    position = models.CharField(max_length=128, null=True, blank=True, verbose_name=_("Position"))
-    image = models.ImageField(upload_to="users/photo", null=True, blank=True, verbose_name=_("Image"))
+    nation = models.CharField(
+        max_length=32, null=True, blank=True, verbose_name=_("Nation")
+    )
+    education = models.CharField(
+        max_length=32, null=True, blank=True, verbose_name=_("Education")
+    )
+    education_place = models.CharField(
+        max_length=256, null=True, blank=True, verbose_name=_("Education place")
+    )
+    work_place = models.CharField(
+        max_length=256, null=True, blank=True, verbose_name=_("Work place")
+    )
+    position = models.CharField(
+        max_length=128, null=True, blank=True, verbose_name=_("Position")
+    )
+    image = models.ImageField(
+        upload_to="users/photo", null=True, blank=True, verbose_name=_("Image")
+    )
     score = models.IntegerField(default=0, verbose_name=_("Score"))
     kpi = models.IntegerField(default=0, verbose_name=_("KPI"))
 
@@ -35,7 +51,9 @@ class Profile(BaseModel):
 
 class SocialNetworkName(BaseModel):
     name = models.CharField(max_length=128, verbose_name=_("Name"))
-    icon = models.ImageField(upload_to="users/social_network/icon", null=True, blank=True)
+    icon = models.ImageField(
+        upload_to="users/social_network/icon", null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -92,7 +110,9 @@ class Document(BaseModel):
         related_name="documents",
         verbose_name=_("Name"),
     )
-    file = models.FileField(upload_to="users/documents", null=True, blank=True, verbose_name=_("File"))
+    file = models.FileField(
+        upload_to="users/documents", null=True, blank=True, verbose_name=_("File")
+    )
 
     class Meta:
         verbose_name = _("Document")

@@ -1,9 +1,18 @@
 from django.contrib import admin
 
-from apps.library.models import (Audio, AudioBook, AudioUnit, Author,
-                                 AuthorCountry, Book, LibraryCategory,
-                                 LibraryCategoryView, UserAudioListenTracker,
-                                 UserBookReadTracker, UserSearchLibrary)
+from apps.library.models import (
+    Audio,
+    AudioBook,
+    AudioUnit,
+    Author,
+    AuthorCountry,
+    Book,
+    LibraryCategory,
+    LibraryCategoryView,
+    UserAudioListenTracker,
+    UserBookReadTracker,
+    UserSearchLibrary,
+)
 
 
 @admin.register(AuthorCountry)

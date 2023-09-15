@@ -1,7 +1,12 @@
 from django.contrib import admin
 
-from apps.user.models import (Document, DocumentName, Profile, SocialNetwork,
-                              SocialNetworkName)
+from apps.user.models import (
+    Document,
+    DocumentName,
+    Profile,
+    SocialNetwork,
+    SocialNetworkName,
+)
 
 
 @admin.register(Profile)

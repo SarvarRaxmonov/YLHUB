@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from apps.main.models import (Announcement, Category, News, Poll, PollChoice,
-                              UserChoice)
+from apps.main.models import Announcement, Category, News, Poll, PollChoice, UserChoice
 
 
 @admin.register(News)

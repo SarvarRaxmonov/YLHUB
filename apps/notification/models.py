@@ -8,7 +8,9 @@ from apps.common.models import BaseModel
 
 
 class Notification(BaseModel):
-    title = models.CharField(max_length=250, null=True, blank=True, verbose_name=_("Title"))
+    title = models.CharField(
+        max_length=250, null=True, blank=True, verbose_name=_("Title")
+    )
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     content_type = models.ForeignKey(
         ContentType,
@@ -17,7 +19,9 @@ class Notification(BaseModel):
         blank=True,
         verbose_name=_("Content type"),
     )
-    object_id = models.PositiveIntegerField(null=True, blank=True, verbose_name=_("Object id"))
+    object_id = models.PositiveIntegerField(
+        null=True, blank=True, verbose_name=_("Object id")
+    )
     content_object = GenericForeignKey("content_type", "object_id")
 
     class Meta:

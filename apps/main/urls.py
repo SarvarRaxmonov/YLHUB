@@ -9,5 +9,9 @@ urlpatterns = [
         ContentDetailAPIView.as_view(),
         name="content-detail",
     ),
-    path("contents/poll/choice/<int:pk>/create/", CreateChoiceAPIView.as_view(), name="create-choice"),
+    path(
+        "contents/poll/choice/<int:pk>/create/",
+        CreateChoiceAPIView.as_view(),
+        name="create-choice",
+    ),
 ]

@@ -19,7 +19,9 @@ class Category(BaseModel):
 
 class News(BaseModel):
     title = models.CharField(max_length=250, null=True, verbose_name=_("Title"))
-    image = models.ImageField(upload_to="main/blog", null=True, blank=True, verbose_name=_("Image"))
+    image = models.ImageField(
+        upload_to="main/blog", null=True, blank=True, verbose_name=_("Image")
+    )
     category = models.ForeignKey(
         "Category",
         on_delete=models.SET_NULL,
@@ -39,8 +41,12 @@ class News(BaseModel):
 
 class Announcement(BaseModel):
     title = models.CharField(max_length=250, null=True, verbose_name=_("Title"))
-    image = models.ImageField(upload_to="main/announcement", null=True, blank=True, verbose_name=_("Image"))
-    location = models.CharField(max_length=250, null=True, blank=True, verbose_name=_("Location"))
+    image = models.ImageField(
+        upload_to="main/announcement", null=True, blank=True, verbose_name=_("Image")
+    )
+    location = models.CharField(
+        max_length=250, null=True, blank=True, verbose_name=_("Location")
+    )
     date = models.DateTimeField(null=True, blank=True, verbose_name=_("Date"))
     content = RichTextUploadingField(verbose_name=_("Content"))
 
@@ -54,7 +60,9 @@ class Announcement(BaseModel):
 
 class Poll(BaseModel):
     title = models.CharField(max_length=250, null=True, verbose_name=_("Title"))
-    image = models.ImageField(upload_to="main/poll", null=True, blank=True, verbose_name=_("Image"))
+    image = models.ImageField(
+        upload_to="main/poll", null=True, blank=True, verbose_name=_("Image")
+    )
 
     def __str__(self):
         return self.title
@@ -82,7 +90,9 @@ class PollChoice(BaseModel):
 
 
 class UserChoice(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="choices", verbose_name=_("User"))
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="choices", verbose_name=_("User")
+    )
     choice = models.ForeignKey(
         "main.PollChoice",
         on_delete=models.CASCADE,

@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import (Image, Test, TestQuestion, UserAnswer, UserTest, Variant,
-                     Video)
+from .models import Image, Test, TestQuestion, UserAnswer, UserTest, Variant, Video
 
 
 @admin.register(Test)
