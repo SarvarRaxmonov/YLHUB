@@ -86,7 +86,7 @@ class UserChoice(BaseModel):
     choice = models.ForeignKey(
         "main.PollChoice",
         on_delete=models.CASCADE,
-        related_name="choices",
+        related_name="user_choice",
         verbose_name=_("Choice"),
     )
 
