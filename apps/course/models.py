@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.common.models import BaseModel
-from apps.cource.choices import CourceTypeChoices, LessonTypeChoices
+from apps.course.choices import CourceTypeChoices, LessonTypeChoices
 
 
 class Language(BaseModel):
@@ -39,7 +39,7 @@ class Course(BaseModel):
     desc = models.TextField(null=True, blank=True, verbose_name=_("Description"))
     score = models.PositiveIntegerField(null=True, blank=True, verbose_name=_("Score"))
     language = models.ForeignKey(
-        "cource.Language",
+        "course.Language",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -47,7 +47,7 @@ class Course(BaseModel):
         verbose_name=_("Language"),
     )
     category = models.ForeignKey(
-        "cource.Category",
+        "course.Category",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -58,7 +58,7 @@ class Course(BaseModel):
         max_length=50, choices=CourceTypeChoices.choices, verbose_name=_("Type")
     )
     image = models.ImageField(
-        upload_to="cource/photos", null=True, blank=True, verbose_name=_("Image")
+        upload_to="course/photos", null=True, blank=True, verbose_name=_("Image")
     )
     duration_days = models.PositiveIntegerField(
         null=True, blank=True, verbose_name=_("Duration days")
@@ -76,7 +76,7 @@ class Lesson(BaseModel):
     title = models.CharField(max_length=250, verbose_name=_("Title"))
     desc = models.TextField(null=True, blank=True, verbose_name=_("Description"))
     course = models.ForeignKey(
-        "cource.Course",
+        "course.Course",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -98,7 +98,7 @@ class Lesson(BaseModel):
 
 class LessonContent(BaseModel):
     lesson = models.ForeignKey(
-        "cource.Lesson",
+        "course.Lesson",
         on_delete=models.CASCADE,
         related_name="contents",
         verbose_name=_("Lesson"),
@@ -137,7 +137,7 @@ class LessonContent(BaseModel):
 
 class LessonProgress(BaseModel):
     lesson = models.ForeignKey(
-        "cource.Lesson",
+        "course.Lesson",
         on_delete=models.CASCADE,
         related_name="lesson_progress",
         verbose_name=_("Lesson"),
@@ -162,7 +162,7 @@ class LessonProgress(BaseModel):
 
 class CourseReview(BaseModel):
     course = models.ForeignKey(
-        "cource.Course",
+        "course.Course",
         verbose_name=_("Course"),
         on_delete=models.CASCADE,
         related_name="reviews",

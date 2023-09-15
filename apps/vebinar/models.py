@@ -9,9 +9,13 @@ class Vebinar(models.Model):
     name = models.CharField(_("nomi"), max_length=500)
     url = models.URLField()
     speaker = models.CharField(max_length=255)
-    status = models.CharField(max_length=10, choices=VEBINARStatus.choices, default="coming")
+    status = models.CharField(
+        max_length=10, choices=VEBINARStatus.choices, default="coming"
+    )
     thumbnail = models.ImageField(_("Cover Photo"), upload_to="thumbnails/")
-    type = models.CharField(max_length=100, choices=VEBINARType.choices, default="seminar")
+    type = models.CharField(
+        max_length=100, choices=VEBINARType.choices, default="seminar"
+    )
     description = models.TextField()
 
     def __str__(self):
@@ -38,7 +42,9 @@ class Chat(models.Model):
 class Complain(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vebinar = models.ForeignKey(Vebinar, on_delete=models.CASCADE)
-    type = models.CharField(max_length=100, choices=ComplainType.choices, default=ComplainType.OTHER)
+    type = models.CharField(
+        max_length=100, choices=ComplainType.choices, default=ComplainType.OTHER
+    )
     text = models.TextField()
 
     def __str__(self):

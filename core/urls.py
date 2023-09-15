@@ -9,7 +9,9 @@ urlpatterns = [
     path("ckeditor/", include("ckeditor_uploader.urls")),
     path("admin/", admin.site.urls),
     path("vebinars/", include("apps.vebinar.urls")),
+    path("user/", include("apps.user.urls")),
     path("main/", include("apps.main.urls")),
+    path("notification/", include("apps.notification.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 

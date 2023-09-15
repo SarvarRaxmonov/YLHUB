@@ -6,7 +6,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("cource", "0004_lessonprogress_coursereview"),
+        ("course", "0004_lessonprogress_coursereview"),
     ]
 
     operations = [
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="courses",
-                to="cource.category",
+                to="course.category",
                 verbose_name="Category",
             ),
         ),

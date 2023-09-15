@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("cource", "0003_alter_lessoncontent_file_alter_lessoncontent_text"),
+        ("course", "0003_alter_lessoncontent_file_alter_lessoncontent_text"),
     ]
 
     operations = [
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="lesson_progress",
-                        to="cource.lesson",
+                        to="course.lesson",
                         verbose_name="Lesson",
                     ),
                 ),
@@ -119,7 +119,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="reviews",
-                        to="cource.course",
+                        to="course.course",
                         verbose_name="Course",
                     ),
                 ),

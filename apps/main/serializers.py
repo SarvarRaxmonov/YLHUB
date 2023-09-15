@@ -60,9 +60,20 @@ class AnnouncementDetailSerializer(serializers.ModelSerializer):
 
 
 class PollChoiceSerializer(serializers.ModelSerializer):
+    my_choice = serializers.SerializerMethodField()
+    percentage = serializers.SerializerMethodField()
+
     class Meta:
         model = PollChoice
-        fields = ("id", "name")
+        fields = ("id", "name", "my_choice", "percentage")
+
+    def get_my_choice(self, obj):
+        user = self.context["request"].user
+        return UserChoice.objects.filter(choice=obj, user=user).exists()
+
+    def get_percentage(self, obj):
+        count = UserChoice.objects.filter(choice=obj).count()
+        return round(count / self.context["count_choices"] * 100)
 
 
 class PollDetailSerializer(serializers.ModelSerializer):
@@ -77,9 +88,9 @@ class PollDetailSerializer(serializers.ModelSerializer):
             "title",
             "image",
             "type",
+            "choice_count",
             "choices",
             "created_at",
-            "choice_count",
         )
 
     def get_type(self, obj):
@@ -87,4 +98,7 @@ class PollDetailSerializer(serializers.ModelSerializer):
 
     def get_choice_count(self, obj):
         values = [_ for _ in obj.choices.all()]
-        return UserChoice.objects.filter(choice__in=values).count()
+        self.context["count_choices"] = UserChoice.objects.filter(
+            choice__in=values
+        ).count()
+        return self.context["count_choices"]

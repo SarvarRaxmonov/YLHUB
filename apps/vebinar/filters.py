@@ -14,5 +14,7 @@ class VebinarFilter(django_filters.FilterSet):
 
     def name_filter(self, queryset, name, value):
         if value:
-            UserSearchVebinar.objects.get_or_create(keyword=value, user=self.request.user)
+            UserSearchVebinar.objects.get_or_create(
+                keyword=value, user=self.request.user
+            )
         return queryset.filter(name__icontains=value)

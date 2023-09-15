@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.cource.models import (
+from apps.course.models import (
     Course,
     CourseReview,
     Language,

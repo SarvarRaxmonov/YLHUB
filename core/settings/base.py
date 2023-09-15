@@ -53,11 +53,12 @@ CUSTOM_APPS = [
     "apps.user",
     "apps.main",
     "apps.notification",
-    "apps.cource",
+    "apps.course",
 ]
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
     "drf_yasg",
     "corsheaders",
     "ckeditor",
@@ -68,7 +69,10 @@ THIRD_PARTY_APPS = [
 
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
