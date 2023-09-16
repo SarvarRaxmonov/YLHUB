@@ -1,21 +1,18 @@
 from rest_framework import status
-from rest_framework.generics import (
-    CreateAPIView,
-    DestroyAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-)
+
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, ListCreateAPIView,
+                                     RetrieveAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.vebinar.filters import VebinarFilter
-from apps.vebinar.models import Complain, UserSearchVebinar, Vebinar
+from apps.vebinar.models import Chat, Complain, UserSearchVebinar, Vebinar
 from apps.vebinar.permisions import IsUserOwner
-from apps.vebinar.serializers import (
-    ComplainSerializer,
-    UserSearchVebinarSerializer,
-    VebinarSerializer,
-)
+from apps.vebinar.serializers import (ChatSerializer, ComplainSerializer,
+                                      UserSearchVebinarSerializer,
+                                      VebinarSerializer)
+
 
 
 class VebinarListView(ListAPIView):
@@ -67,3 +64,8 @@ class UserVebinarSearchHistoryDeleteView(DestroyAPIView):
                 {"message": f"No keywords found for device {user_id}"},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+
+class MessageListCreateView(ListCreateAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer

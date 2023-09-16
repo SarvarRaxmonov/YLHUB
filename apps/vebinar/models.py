@@ -30,10 +30,16 @@ class UserSearchVebinar(models.Model):
         return f'Search for "{self.keyword}" by {self.user.username}'
 
 
+class ChatRoom(models.Model):
+    name = models.CharField(max_length=255)
+
+
 class Chat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vebinar = models.ForeignKey(Vebinar, on_delete=models.CASCADE)
-    text = models.TextField()
+    room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Chat in "{self.vebinar.name}" by {self.user.username}'
