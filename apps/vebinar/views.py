@@ -1,5 +1,4 @@
 from rest_framework import status
-
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, ListCreateAPIView,
                                      RetrieveAPIView)
@@ -12,7 +11,6 @@ from apps.vebinar.permisions import IsUserOwner
 from apps.vebinar.serializers import (ChatSerializer, ComplainSerializer,
                                       UserSearchVebinarSerializer,
                                       VebinarSerializer)
-
 
 
 class VebinarListView(ListAPIView):

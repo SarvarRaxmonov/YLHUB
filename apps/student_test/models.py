@@ -1,17 +1,42 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext as _
+
+from apps.student_test.validators import validate_min_duration
+
+
+class Subject(models.Model):
+    name = models.CharField(_("Name"), max_length=800)
+
+    def __str__(self):
+        return self.name
 
 
 class Test(models.Model):
     name = models.CharField(max_length=255)
-    time = models.DurationField()
+    time = models.DurationField(validators=[validate_min_duration])
     # course = models.ForeignKey(Course, on_delete=models.CASCADE)
     resumbit_attempt_count = models.IntegerField(default=0)
-    questions = models.IntegerField(default=1)
+    point = models.BigIntegerField(_("Berilgan Ball"), default=0)
+    is_required = models.BooleanField(_("Majburiymi "), default=True)
+    questions = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        test_questions_to_update = TestQuestion.objects.filter(Q(Q(test__isnull=True) | Q(test=self.id)), subject=self.subject.id)
+        real = TestQuestion.objects.filter(test=self.id, subject=self.subject.id)
+        print(real.count(), "Test questions")
+        if self.questions > test_questions_to_update.count():
+            raise ValidationError(
+                _("%(value)s is greater than the number of questions in Test Questions, please " "create a new test questions in a %(subject)s subject "),
+                params={"value": self.questions, "subject": self.subject.name},
+            )
 
 
 class TestQuestion(models.Model):
@@ -20,9 +45,10 @@ class TestQuestion(models.Model):
         MULTI_SELECT = "multi_select", "Multi-Select"
         SINGLE_SELECT = "single_select", "Single-Select"
 
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, blank=True, null=True)
     question = models.TextField()
     type = models.CharField(max_length=20, choices=QuestionType.choices)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.question
