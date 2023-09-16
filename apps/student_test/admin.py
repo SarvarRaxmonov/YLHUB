@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import Media, Test, TestQuestion, UserAnswer, UserTest, Variant
-
+from .models import (Media, Subject, Test, TestQuestion, UserAnswer, UserTest,
+                     Variant)
 
 
 @admin.register(Test)
@@ -22,6 +22,11 @@ class TestQuestionAdmin(admin.ModelAdmin):
 @admin.register(Media)
 class TestMediaAdmin(admin.ModelAdmin):
     list_display = ("file", "type")
+
+
+@admin.register(Subject)
+class TestSubjectAdmin(admin.ModelAdmin):
+    list_display = ("name",)
 
 
 @admin.register(UserAnswer)
