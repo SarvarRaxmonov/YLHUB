@@ -15,7 +15,7 @@ class UserSearchVebinarAdmin(admin.ModelAdmin):
 
 @admin.register(Chat)
 class ChatAdmin(admin.ModelAdmin):
-    list_display = ("user", "vebinar", "text")
+    list_display = ("user", "vebinar", "content")
 
 
 @admin.register(Complain)
