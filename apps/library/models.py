@@ -42,7 +42,9 @@ class FileInfo(models.Model):
     category = models.ForeignKey(LibraryCategory, on_delete=models.CASCADE)
     author = models.ManyToManyField(Author)
     publication_year = models.PositiveIntegerField(blank=True)
-    language = models.CharField(max_length=3, choices=Language.choices, default=Language.UZBEK)
+    language = models.CharField(
+        max_length=3, choices=Language.choices, default=Language.UZBEK
+    )
     description = models.TextField()
 
     class Meta:

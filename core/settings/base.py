@@ -51,19 +51,28 @@ CUSTOM_APPS = [
     "apps.student_test",
     "apps.library",
     "apps.user",
+    "apps.main",
+    "apps.notification",
+    "apps.course",
 ]
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
     "drf_yasg",
     "corsheaders",
+    "ckeditor",
+    "ckeditor_uploader",
     "debug_toolbar",
     "django_filters",
 ]
 
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
@@ -199,6 +208,24 @@ CELERY_TIMEZONE = "Asia/Tashkent"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar": "Custom",
+        "toolbar_Custom": (
+            [
+                ["Bold", "Italic", "Underline"],
+                ["NumberedList", "BulletedList", "Blockquote"],
+                ["Link", "Unlink"],
+                ["RemoveFormat", "Source"],
+            ]
+        ),
+        "width": "100%",
+        "height": 300,
+        "filebrowserUploadUrl": "/ckeditor/upload/",
+        # Other CKEditor settings as needed
+    }
+}
+CKEDITOR_UPLOAD_PATH = "content/ckeditor/"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
