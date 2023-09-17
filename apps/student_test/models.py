@@ -30,13 +30,14 @@ class Test(models.Model):
 
     def clean(self):
         test_questions_to_update = TestQuestion.objects.filter(Q(Q(test__isnull=True) | Q(test=self.id)), subject=self.subject.id)
-        real = TestQuestion.objects.filter(test=self.id, subject=self.subject.id)
-        print(real.count(), "Test questions")
+        test = Test.objects.filter(id=self.id).first()
         if self.questions > test_questions_to_update.count():
             raise ValidationError(
                 _("%(value)s is greater than the number of questions in Test Questions, please " "create a new test questions in a %(subject)s subject "),
                 params={"value": self.questions, "subject": self.subject.name},
             )
+        elif test and test.subject != self.subject:
+            raise ValidationError("You can not change test subject after creation ")
 
 
 class TestQuestion(models.Model):
@@ -53,6 +54,17 @@ class TestQuestion(models.Model):
     def __str__(self):
         return self.question
 
+    def clean(self):
+        if self.test and self.test.subject != self.subject:
+            raise ValidationError(
+                _("%(test)s test and question must be in same subject not different ones , please follow the rules of " "subject changes . Change it ' %(question_subject)s ' to %(test_subject)s ."),
+                params={
+                    "test": self.test.name,
+                    "question_subject": self.subject.name,
+                    "test_subject": self.test.subject.name,
+                },
+            )
+
 
 class Media(models.Model):
     file = models.FileField(upload_to="test/files/")
@@ -63,11 +75,11 @@ class Media(models.Model):
 class Variant(models.Model):
     question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE, verbose_name=_("Savolni tanlang"))
     option = models.CharField(max_length=1000)
-    order = models.PositiveIntegerField()
+    order = models.PositiveIntegerField(blank=True, null=True)
     is_true = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.question
+        return self.option
 
 
 class UserTest(models.Model):
