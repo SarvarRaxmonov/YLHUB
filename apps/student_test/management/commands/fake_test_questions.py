@@ -11,7 +11,7 @@ class Command(BaseCommand):
         fake = Faker()
         subjects = Subject.objects.all()
         question_types = [choice[0] for choice in TestQuestion.QuestionType.choices]
-
+        fake_records = []
         num_fake_records = 100
 
         for _ in range(num_fake_records):
@@ -20,6 +20,7 @@ class Command(BaseCommand):
                 type=fake.random_element(question_types),
                 subject=fake.random_element(subjects),
             )
-            test_question.save()
+            fake_records.append(test_question)
 
+        TestQuestion.objects.bulk_create(fake_records)
         self.stdout.write(self.style.SUCCESS(f"Successfully created {num_fake_records} fake TestQuestion records."))
