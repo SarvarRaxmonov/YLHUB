@@ -1,15 +1,37 @@
 from datetime import datetime
-
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.utils import timezone
-from apps.student_test.models import Test, UserTest
+from apps.student_test.models import Test, UserTest, TestQuestion, Variant, UserAnswer
+
+
+class TestQuestionVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Variant
+        fields = ("id", "question", "option")
+
+
+class TestQuestionSerializer(serializers.ModelSerializer):
+    variant_to_question = TestQuestionVariantSerializer(many=True)
+
+    class Meta:
+        model = TestQuestion
+        fields = ("id", "test", "question", "type", "subject", "variant_to_question")
 
 
 class TestSerializer(serializers.ModelSerializer):
+    question_to_test = TestQuestionSerializer(many=True)
+
     class Meta:
         model = Test
-        fields = ("id", "name", "time", "resumbit_attempt_count", "questions")
+        fields = (
+            "id",
+            "name",
+            "time",
+            "resumbit_attempt_count",
+            "questions",
+            "question_to_test",
+        )
 
 
 class UserTestSerializer(serializers.ModelSerializer):
@@ -42,3 +64,19 @@ class UserTestSerializer(serializers.ModelSerializer):
         if end_time != expected_end_time:
             raise ValidationError("Expected right calculated end time for user test.")
         return value
+
+
+class UserAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAnswer
+        fields = ("user_test", "question", "selected_variant")
+
+    def validate(self, obj):
+        question = self.initial_data.get("question")
+        variants = self.initial_data.get("selected_variant")
+        for variant_id in variants:
+            try:
+                Variant.objects.get(id=variant_id, question__id=question)
+            except Variant.DoesNotExist:
+                raise serializers.ValidationError(f"This {variant_id} id variant is not related to the current {question} question.")
+        return obj
