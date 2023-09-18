@@ -29,6 +29,10 @@ class IsHasAccessToUserAnswerUpdate(permissions.BasePermission):
         user_test_id = request.data.get("user_test")
         question = request.data.get("question")
         if user_test_id:
-            user_answer = UserAnswer.objects.filter(user_test__user=request.user.id, user_test=user_test_id, question=question).first()
+            user_answer = UserAnswer.objects.filter(
+                user_test__user=request.user.id,
+                user_test=user_test_id,
+                question=question,
+            ).first()
             if user_answer and user_answer.user_test.end_time > current_time and request.method in ("PUT",):
                 return True

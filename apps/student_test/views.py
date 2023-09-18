@@ -1,6 +1,10 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
-from apps.student_test.permissions import IsHasAccessToDetailOfQuestion, IsHasAccessToUserAnswer, IsHasAccessToUserAnswerUpdate
+from apps.student_test.permissions import (
+    IsHasAccessToDetailOfQuestion,
+    IsHasAccessToUserAnswer,
+    IsHasAccessToUserAnswerUpdate,
+)
 from apps.student_test.models import Test, UserTest, TestQuestion, UserAnswer
 from apps.student_test.serializers import (
     TestSerializer,
