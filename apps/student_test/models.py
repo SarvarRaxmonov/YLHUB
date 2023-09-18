@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
-
+from datetime import timedelta
 from apps.student_test.validators import validate_min_duration
 
 
@@ -39,6 +39,14 @@ class Test(models.Model):
         elif test and test.subject != self.subject:
             raise ValidationError("You can not change test subject after creation ")
 
+    def save(self, *args, **kwargs):
+        total_seconds = self.time.total_seconds()
+        hours, remainder = divmod(total_seconds, 3600)
+        minutes, _ = divmod(remainder, 60)
+        modified_duration = timedelta(hours=hours, minutes=minutes)
+        self.time = modified_duration
+        super().save(*args, **kwargs)
+
 
 class TestQuestion(models.Model):
     class QuestionType(models.TextChoices):
@@ -46,7 +54,13 @@ class TestQuestion(models.Model):
         MULTI_SELECT = "multi_select", "Multi-Select"
         SINGLE_SELECT = "single_select", "Single-Select"
 
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, blank=True, null=True)
+    test = models.ForeignKey(
+        Test,
+        on_delete=models.CASCADE,
+        related_name="question_to_test",
+        blank=True,
+        null=True,
+    )
     question = models.TextField()
     type = models.CharField(max_length=20, choices=QuestionType.choices)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -70,10 +84,16 @@ class Media(models.Model):
     file = models.FileField(upload_to="test/files/")
     test_question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE, verbose_name=_("Savolni tanlang"))
     type = models.CharField(max_length=255, choices=[("image", "image"), ("video", "video")])
+    order = models.PositiveIntegerField()
 
 
 class Variant(models.Model):
-    question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE, verbose_name=_("Savolni tanlang"))
+    question = models.ForeignKey(
+        TestQuestion,
+        on_delete=models.CASCADE,
+        related_name="variant_to_question",
+        verbose_name=_("Savolni tanlang"),
+    )
     option = models.CharField(max_length=1000)
     order = models.PositiveIntegerField(blank=True, null=True)
     is_true = models.BooleanField(default=False)
@@ -98,3 +118,9 @@ class UserAnswer(models.Model):
     question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
     selected_variant = models.ManyToManyField(Variant)
     is_true = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("user_test", "question")
+
+    def __str__(self):
+        return f"{self.user_test.user.username} {self.question}"
