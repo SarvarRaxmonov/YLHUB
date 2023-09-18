@@ -12,6 +12,7 @@ urlpatterns = [
     path("user/", include("apps.user.urls")),
     path("main/", include("apps.main.urls")),
     path("notification/", include("apps.notification.urls")),
+    path("course/", include("apps.course.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 

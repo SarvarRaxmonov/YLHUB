@@ -1,10 +1,7 @@
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
-from django.core.validators import (
-    FileExtensionValidator,
-    MaxValueValidator,
-    MinValueValidator,
-)
+from django.core.validators import (FileExtensionValidator, MaxValueValidator,
+                                    MinValueValidator)
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -54,15 +51,9 @@ class Course(BaseModel):
         related_name="courses",
         verbose_name=_("Category"),
     )
-    type = models.CharField(
-        max_length=50, choices=CourceTypeChoices.choices, verbose_name=_("Type")
-    )
-    image = models.ImageField(
-        upload_to="course/photos", null=True, blank=True, verbose_name=_("Image")
-    )
-    duration_days = models.PositiveIntegerField(
-        null=True, blank=True, verbose_name=_("Duration days")
-    )
+    type = models.CharField(max_length=50, choices=CourceTypeChoices.choices, verbose_name=_("Type"))
+    image = models.ImageField(upload_to="course/photos", null=True, blank=True, verbose_name=_("Image"))
+    duration_days = models.PositiveIntegerField(null=True, blank=True, verbose_name=_("Duration days"))
 
     class Meta:
         verbose_name = _("Course")
@@ -83,14 +74,13 @@ class Lesson(BaseModel):
         related_name="lessons",
         verbose_name="Course",
     )
-    type = models.CharField(
-        max_length=50, choices=LessonTypeChoices.choices, verbose_name=_("Type")
-    )
+    type = models.CharField(max_length=50, choices=LessonTypeChoices.choices, verbose_name=_("Type"))
     order = models.PositiveIntegerField(verbose_name=_("Order"))
 
     class Meta:
         verbose_name = _("Lesson")
         verbose_name_plural = _("Lessons")
+        ordering = ["order"]
 
     def __str__(self):
         return self.title
@@ -150,9 +140,10 @@ class LessonProgress(BaseModel):
     )
     is_started = models.BooleanField(verbose_name=_("lesson is started"), default=False)
     percentage = models.FloatField(verbose_name=_("progress percentage"), default=0)
-    is_completed = models.BooleanField(
-        verbose_name=_("lesson is completed"), default=False
-    )
+    is_completed = models.BooleanField(verbose_name=_("lesson is completed"), default=False)
+
+    def __str__(self):
+        return f"{self.user.username} lesson is {self.lesson.title}"
 
     class Meta:
         unique_together = ("lesson", "user")
@@ -167,9 +158,7 @@ class CourseReview(BaseModel):
         on_delete=models.CASCADE,
         related_name="reviews",
     )
-    user = models.ForeignKey(
-        User, verbose_name=_("User"), on_delete=models.CASCADE, related_name="reviews"
-    )
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE, related_name="reviews")
     comment = models.TextField(verbose_name=_("Comment"))
     rating = models.PositiveIntegerField(
         verbose_name=_("Rating"),

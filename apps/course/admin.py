@@ -1,13 +1,12 @@
 from django.contrib import admin
 
-from apps.course.models import (
-    Course,
-    CourseReview,
-    Language,
-    Lesson,
-    LessonContent,
-    LessonProgress,
-)
+from apps.course.models import (Category, Course, CourseReview, Language,
+                                Lesson, LessonContent, LessonProgress)
+
+
+@admin.register(Category)
+class AdminCategory(admin.ModelAdmin):
+    list_display = ("id", "name")
 
 
 @admin.register(Course)

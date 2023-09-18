@@ -6,5 +6,6 @@ django-jazzmin
 drf-yasg
 djangorestframework
 django-filter
+django-ckeditor==6.7.0
 Faker==19.6.1
 djangorestframework-simplejwt==5.2.0
