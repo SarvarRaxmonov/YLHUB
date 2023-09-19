@@ -23,4 +23,8 @@ class Command(BaseCommand):
             fake_records.append(test_question)
 
         TestQuestion.objects.bulk_create(fake_records)
-        self.stdout.write(self.style.SUCCESS(f"Successfully created {num_fake_records} fake TestQuestion records."))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Successfully created {num_fake_records} fake TestQuestion records."
+            )
+        )
