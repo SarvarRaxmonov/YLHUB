@@ -18,10 +18,14 @@ def add_questions_to_updated_test_signal(sender, instance, **kwargs):
         old_questions = Test.objects.get(id=instance.id).questions
         if instance.questions > old_questions:
             question_count_difference = instance.questions - old_questions
-            update_test_questions_relationship(instance, question_count=question_count_difference)
+            update_test_questions_relationship(
+                instance, question_count=question_count_difference
+            )
         else:
             question_count_difference = old_questions - instance.questions
-            remove_test_question_relationship(instance, question_count=question_count_difference)
+            remove_test_question_relationship(
+                instance, question_count=question_count_difference
+            )
     except instance.DoesNotExist:
         return instance
 
@@ -69,14 +73,28 @@ def update_test_questions_field(id=None, add=False, remove=False):
 
 
 def update_test_questions_relationship(instance=None, question_count=0):
-    test_questions_to_update = TestQuestion.objects.filter(subject=instance.subject.id, test__isnull=True).order_by("?")
-    if test_questions_to_update and instance and test_questions_to_update.count() >= question_count:
-        updated_test_questions = [TestQuestion(id=test_question.id, test=instance) for test_question in test_questions_to_update[:question_count]]
+    test_questions_to_update = TestQuestion.objects.filter(
+        subject=instance.subject.id, test__isnull=True
+    ).order_by("?")
+    if (
+        test_questions_to_update
+        and instance
+        and test_questions_to_update.count() >= question_count
+    ):
+        updated_test_questions = [
+            TestQuestion(id=test_question.id, test=instance)
+            for test_question in test_questions_to_update[:question_count]
+        ]
         TestQuestion.objects.bulk_update(updated_test_questions, ["test"])
 
 
 def remove_test_question_relationship(instance=None, question_count=0):
-    test_questions_to_update = TestQuestion.objects.filter(subject=instance.subject.id, test=instance)
+    test_questions_to_update = TestQuestion.objects.filter(
+        subject=instance.subject.id, test=instance
+    )
     if test_questions_to_update.count() >= question_count:
-        updated_test_questions = [TestQuestion(id=test_question.id, test=None) for test_question in test_questions_to_update[:question_count]]
+        updated_test_questions = [
+            TestQuestion(id=test_question.id, test=None)
+            for test_question in test_questions_to_update[:question_count]
+        ]
         TestQuestion.objects.bulk_update(updated_test_questions, ["test"])

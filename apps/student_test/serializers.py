@@ -12,11 +12,31 @@ class TestQuestionVariantSerializer(serializers.ModelSerializer):
 
 
 class TestQuestionSerializer(serializers.ModelSerializer):
-    variant_to_question = TestQuestionVariantSerializer(many=True)
+    variants_to_question = TestQuestionVariantSerializer(many=True)
+    user_answer = serializers.SerializerMethodField()
 
     class Meta:
         model = TestQuestion
-        fields = ("id", "test", "question", "type", "subject", "variant_to_question")
+        fields = (
+            "id",
+            "test",
+            "question",
+            "type",
+            "subject",
+            "variants_to_question",
+            "user_answer",
+        )
+
+    def get_user_answer(self, obj):
+        user = self.context["request"].user
+        current_time = timezone.now().replace(second=0, microsecond=0)
+        answer = UserAnswer.objects.filter(
+            user_test__user=user, question=obj.id, user_test__end_time__gte=current_time
+        ).first()
+        if answer:
+            serializer = UserAnswerSerializer(answer)
+            return serializer.data
+        return
 
 
 class TestSerializer(serializers.ModelSerializer):
@@ -37,7 +57,7 @@ class TestSerializer(serializers.ModelSerializer):
 class UserTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTest
-        fields = ("test", "start_time", "end_time")
+        fields = ("id", "test", "start_time", "end_time")
 
     def create(self, validated_data):
         validated_data["user"] = self.context["request"].user
@@ -45,21 +65,45 @@ class UserTestSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         current_time = timezone.now().strftime("%Y-%m-%dT%H:%M")
-        test = UserTest.objects.filter(user=self.context.get("request").user, end_time__gte=current_time)
+        test = UserTest.objects.filter(
+            user=self.context.get("request").user, end_time__gte=current_time
+        )
         if test.exists():
-            raise ValidationError("You can not do multiple tests at the same time please solve your current test")
+            raise ValidationError(
+                "You can not do multiple tests at the same time please solve your current test"
+            )
         return data
 
+    def validate_test(self, value):
+        test = Test.objects.get(id=value.id)
+        user_test = (
+            UserTest.objects.filter(
+                user=self.context.get("request").user, test=test
+            ).count()
+            - 1
+        )
+        if user_test >= test.resumbit_attempt_count:
+            raise ValidationError(
+                "Your attempt count is finished you can not attempt to this test "
+            )
+        return value
+
     def validate_start_time(self, value):
-        current_time = timezone.now()
-        if value > current_time:
-            raise ValidationError("Start time cannot be in the future.")
+        current_time = timezone.now().replace(second=0, microsecond=0)
+        if value > current_time or current_time != value:
+            raise ValidationError(
+                "Start time cannot be in the future or past, it must be in present, now."
+            )
         return value
 
     def validate_end_time(self, value):
         test_taken = Test.objects.get(id=self.initial_data.get("test"))
-        start_time = datetime.strptime(self.initial_data.get("start_time"), "%Y-%m-%dT%H:%M")
-        end_time = datetime.strptime(self.initial_data.get("end_time"), "%Y-%m-%dT%H:%M")
+        start_time = datetime.strptime(
+            self.initial_data.get("start_time"), "%Y-%m-%dT%H:%M"
+        )
+        end_time = datetime.strptime(
+            self.initial_data.get("end_time"), "%Y-%m-%dT%H:%M"
+        )
         expected_end_time = start_time + test_taken.time
         if end_time != expected_end_time:
             raise ValidationError("Expected right calculated end time for user test.")
@@ -69,7 +113,7 @@ class UserTestSerializer(serializers.ModelSerializer):
 class UserAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAnswer
-        fields = ("user_test", "question", "selected_variant")
+        fields = ("id", "user_test", "question", "selected_variant")
 
     def validate(self, obj):
         question = self.initial_data.get("question")
@@ -78,5 +122,16 @@ class UserAnswerSerializer(serializers.ModelSerializer):
             try:
                 Variant.objects.get(id=variant_id, question__id=question)
             except Variant.DoesNotExist:
-                raise serializers.ValidationError(f"This {variant_id} id variant is not related to the current {question} question.")
+                raise serializers.ValidationError(
+                    f"This {variant_id} id variant is not related to the current {question} question."
+                )
         return obj
+
+    def validate_selected_variant(self, value):
+        question_id = self.initial_data.get("question")
+        question = TestQuestion.objects.get(id=question_id)
+        if question.type == "single_select" and len(value) > 1:
+            raise serializers.ValidationError(
+                f"This '{question}' question is not in multi selected type"
+            )
+        return value

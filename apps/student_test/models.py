@@ -29,11 +29,16 @@ class Test(models.Model):
         return self.name
 
     def clean(self):
-        test_questions_to_update = TestQuestion.objects.filter(Q(Q(test__isnull=True) | Q(test=self.id)), subject=self.subject.id)
+        test_questions_to_update = TestQuestion.objects.filter(
+            Q(Q(test__isnull=True) | Q(test=self.id)), subject=self.subject.id
+        )
         test = Test.objects.filter(id=self.id).first()
         if self.questions > test_questions_to_update.count():
             raise ValidationError(
-                _("%(value)s is greater than the number of questions in Test Questions, please " "create a new test questions in a %(subject)s subject "),
+                _(
+                    "%(value)s is greater than the number of questions in Test Questions, please "
+                    "create a new test questions in a %(subject)s subject "
+                ),
                 params={"value": self.questions, "subject": self.subject.name},
             )
         elif test and test.subject != self.subject:
@@ -71,7 +76,10 @@ class TestQuestion(models.Model):
     def clean(self):
         if self.test and self.test.subject != self.subject:
             raise ValidationError(
-                _("%(test)s test and question must be in same subject not different ones , please follow the rules of " "subject changes . Change it ' %(question_subject)s ' to %(test_subject)s ."),
+                _(
+                    "%(test)s test and question must be in same subject not different ones , please follow the rules of "
+                    "subject changes . Change it ' %(question_subject)s ' to %(test_subject)s ."
+                ),
                 params={
                     "test": self.test.name,
                     "question_subject": self.subject.name,
@@ -82,8 +90,12 @@ class TestQuestion(models.Model):
 
 class Media(models.Model):
     file = models.FileField(upload_to="test/files/")
-    test_question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE, verbose_name=_("Savolni tanlang"))
-    type = models.CharField(max_length=255, choices=[("image", "image"), ("video", "video")])
+    test_question = models.ForeignKey(
+        TestQuestion, on_delete=models.CASCADE, verbose_name=_("Savolni tanlang")
+    )
+    type = models.CharField(
+        max_length=255, choices=[("image", "image"), ("video", "video")]
+    )
     order = models.PositiveIntegerField()
 
 
@@ -91,7 +103,7 @@ class Variant(models.Model):
     question = models.ForeignKey(
         TestQuestion,
         on_delete=models.CASCADE,
-        related_name="variant_to_question",
+        related_name="variants_to_question",
         verbose_name=_("Savolni tanlang"),
     )
     option = models.CharField(max_length=1000)
@@ -104,7 +116,9 @@ class Variant(models.Model):
 
 class UserTest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    test = models.ForeignKey(
+        Test, on_delete=models.CASCADE, related_name="user_test_to_test"
+    )
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     is_finished = models.BooleanField(default=False)
