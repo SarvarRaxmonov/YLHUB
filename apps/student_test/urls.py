@@ -6,6 +6,8 @@ from apps.student_test.views import (
     TestQuestionDetailViewSet,
     UserAnswerCreateViewSet,
     UserAnswerUpdateViewSet,
+    UserTestFinishAPIView,
+    UserTestResultViewSet,
 )
 
 urlpatterns = [
@@ -21,5 +23,15 @@ urlpatterns = [
         "answer-update/<int:pk>",
         UserAnswerUpdateViewSet.as_view(),
         name="answer-update",
+    ),
+    path(
+        "finish-test/<int:user_test_id>",
+        UserTestFinishAPIView.as_view(),
+        name="finish-test",
+    ),
+    path(
+        "result-test/<int:id>",
+        UserTestResultViewSet.as_view(),
+        name="result-test",
     ),
 ]

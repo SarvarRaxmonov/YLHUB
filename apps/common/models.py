@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -12,3 +13,11 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class TemporaryUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    point = models.PositiveIntegerField(_("Point"), default=0)
+
+    def __str__(self):
+        return self.user.username

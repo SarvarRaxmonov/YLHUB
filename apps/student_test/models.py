@@ -18,8 +18,8 @@ class Subject(models.Model):
 class Test(models.Model):
     name = models.CharField(max_length=255)
     time = models.DurationField(validators=[validate_min_duration])
-    # course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    resumbit_attempt_count = models.IntegerField(default=0)
+    # course = models.ForeignKey(Course, on_delete=models.CASCADE) # for future releases of yl_hub
+    resubmit_attempt_count = models.IntegerField(default=0)
     point = models.BigIntegerField(_("Berilgan Ball"), default=0)
     is_required = models.BooleanField(_("Majburiymi "), default=True)
     questions = models.IntegerField(default=1, validators=[MinValueValidator(1)])
@@ -107,11 +107,28 @@ class Variant(models.Model):
         verbose_name=_("Savolni tanlang"),
     )
     option = models.CharField(max_length=1000)
-    order = models.PositiveIntegerField(blank=True, null=True)
+    order = models.PositiveIntegerField(blank=True, default=0)
     is_true = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("question", "order")
 
     def __str__(self):
         return self.option
+
+    def save(self, *args, **kwargs):
+        if self.question.type == "choice_order":
+            self.is_true = True
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        if self.question.type == "choice_order" and 0 >= self.order:
+            raise ValidationError(
+                _(
+                    "Current chosen question type is Choice Order, you can not set order to 0 , "
+                    "please provide a number to order field ."
+                ),
+            )
 
 
 class UserTest(models.Model):
@@ -128,7 +145,9 @@ class UserTest(models.Model):
 
 
 class UserAnswer(models.Model):
-    user_test = models.ForeignKey(UserTest, on_delete=models.CASCADE)
+    user_test = models.ForeignKey(
+        UserTest, on_delete=models.CASCADE, related_name="user_answer_to_user_test"
+    )
     question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
     selected_variant = models.ManyToManyField(Variant)
     is_true = models.BooleanField(default=False)
