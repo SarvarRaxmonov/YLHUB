@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.utils import timezone
 from apps.student_test.models import Test, UserTest, TestQuestion, Variant, UserAnswer
+from apps.student_test.utils import check_answers
 
 
 class TestQuestionVariantSerializer(serializers.ModelSerializer):
@@ -48,7 +49,7 @@ class TestSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "time",
-            "resumbit_attempt_count",
+            "resubmit_attempt_count",
             "questions",
             "question_to_test",
         )
@@ -82,7 +83,7 @@ class UserTestSerializer(serializers.ModelSerializer):
             ).count()
             - 1
         )
-        if user_test >= test.resumbit_attempt_count:
+        if user_test >= test.resubmit_attempt_count:
             raise ValidationError(
                 "Your attempt count is finished you can not attempt to this test "
             )
@@ -111,9 +112,11 @@ class UserTestSerializer(serializers.ModelSerializer):
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
+    is_true = serializers.BooleanField(write_only=False, default=False)
+
     class Meta:
         model = UserAnswer
-        fields = ("id", "user_test", "question", "selected_variant")
+        fields = ("id", "user_test", "question", "selected_variant", "is_true")
 
     def validate(self, obj):
         question = self.initial_data.get("question")
@@ -135,3 +138,10 @@ class UserAnswerSerializer(serializers.ModelSerializer):
                 f"This '{question}' question is not in multi selected type"
             )
         return value
+
+    def validate_is_true(self, value):
+        check = check_answers(
+                self.initial_data.get("question"),
+                self.initial_data.get("selected_variant"),
+            )
+        return check

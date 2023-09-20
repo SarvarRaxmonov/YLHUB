@@ -1,6 +1,13 @@
 from django.contrib import admin
-
-from .models import Media, Subject, Test, TestQuestion, UserAnswer, UserTest, Variant
+from apps.student_test.models import (
+    Media,
+    Subject,
+    Test,
+    TestQuestion,
+    UserAnswer,
+    UserTest,
+    Variant,
+)
 
 
 @admin.register(Test)

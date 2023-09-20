@@ -1,3 +1,7 @@
 from django.contrib import admin
+from apps.common.models import TemporaryUser
 
-# Register your models here.
+
+@admin.register(TemporaryUser)
+class TestAdmin(admin.ModelAdmin):
+    list_display = ("user", "point")
