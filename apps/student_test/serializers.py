@@ -141,7 +141,7 @@ class UserAnswerSerializer(serializers.ModelSerializer):
 
     def validate_is_true(self, value):
         check = check_answers(
-                self.initial_data.get("question"),
-                self.initial_data.get("selected_variant"),
-            )
+            self.initial_data.get("question"),
+            self.initial_data.get("selected_variant"),
+        )
         return check

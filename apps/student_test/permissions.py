@@ -9,12 +9,12 @@ class IsHasAccessToDetailOfQuestion(permissions.BasePermission):
         test = obj.test
         if test:
             user_test = UserTest.objects.filter(
-                user=request.user.id, test=test.id, end_time__gte=current_time, is_finished=False
+                user=request.user.id,
+                test=test.id,
+                end_time__gte=current_time,
+                is_finished=False,
             ).first()
-            if (
-                user_test
-                and request.method in permissions.SAFE_METHODS
-            ):
+            if user_test and request.method in permissions.SAFE_METHODS:
                 return True
 
 
@@ -24,12 +24,12 @@ class IsHasAccessToUserAnswer(permissions.BasePermission):
         user_test_id = request.data.get("user_test")
         if user_test_id:
             user_test = UserTest.objects.filter(
-                user=request.user.id, id=user_test_id, end_time__gte=current_time, is_finished=False
+                user=request.user.id,
+                id=user_test_id,
+                end_time__gte=current_time,
+                is_finished=False,
             ).first()
-            if (
-                user_test
-                and request.method in ("POST",)
-            ):
+            if user_test and request.method in ("POST",):
                 return True
 
 
@@ -46,8 +46,5 @@ class IsHasAccessToUserAnswerUpdate(permissions.BasePermission):
                 user_test__is_finished=False,
                 question=question,
             ).first()
-            if (
-                user_answer
-                and request.method in ("PUT",)
-            ):
+            if user_answer and request.method in ("PUT",):
                 return True

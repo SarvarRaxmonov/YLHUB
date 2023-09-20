@@ -44,7 +44,10 @@ class UserTestResultViewSet(RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         point = instance.test.point
-        if instance and instance.user_answer_to_user_test.all().filter(is_true=False).exists():
+        if (
+            instance
+            and instance.user_answer_to_user_test.all().filter(is_true=False).exists()
+        ):
             point = 0
         additional_data = {
             "user": request.user.username,
@@ -74,7 +77,6 @@ class UserAnswerUpdateViewSet(UpdateAPIView):
 
 
 class UserTestFinishAPIView(APIView):
-
     def post(self, request, user_test_id, *args, **kwargs):
         try:
             current_time = timezone.now().replace(second=0, microsecond=0)
@@ -95,9 +97,11 @@ class UserTestFinishAPIView(APIView):
                     {
                         "user": request.user.username,
                         "user test id": user_test.id,
-                        "Right answers count": user_test.user_answer_to_user_test.filter(is_true=True).count(),
+                        "Right answers count": user_test.user_answer_to_user_test.filter(
+                            is_true=True
+                        ).count(),
                         "total point": point,
-                        "is finished": user_test.is_finished
+                        "is finished": user_test.is_finished,
                     },
                     status=status.HTTP_200_OK,
                 )
