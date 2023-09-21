@@ -57,7 +57,7 @@ class UserTestResultViewSet(RetrieveAPIView):
             **additional_data,
             **serializer.data,
         }
-        return Response(response_data)
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class UserAnswerCreateViewSet(CreateAPIView):

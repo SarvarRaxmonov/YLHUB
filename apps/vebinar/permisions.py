@@ -7,9 +7,7 @@ class IsUserOwner(permissions.BasePermission):
             request.method in ("POST", "DELETE", "GET")
             and request.user.is_authenticated
         ):
-            data_user_id = request.data.get("user") or view.kwargs.get(
-                view.lookup_field
-            )
+            data_user_id = view.kwargs.get(view.lookup_field) or request.data.get('user')
             if data_user_id is not None:
                 return request.user.id == data_user_id
         return False
