@@ -49,7 +49,6 @@ CUSTOM_APPS = [
     "apps.common",
     "apps.vebinar",
     "apps.student_test",
-    "apps.library",
     "apps.user",
     "apps.main",
     "apps.notification",

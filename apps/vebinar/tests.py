@@ -14,7 +14,7 @@ class VebinarListViewTest(APITestCase):
             "image.jpg", jpg_content, content_type="image/jpg"
         )
         self.new_user = User.objects.create_user(
-            username="username", password="Password2004?"
+            username="user", password="Password2004?"
         )
         self.vebinar1 = Vebinar.objects.create(
             name="example 1",
@@ -56,8 +56,9 @@ class VebinarListViewTest(APITestCase):
 class SearchViewTest(APITestCase):
     def setUp(self):
         self.new_user = User.objects.create_user(
-            username="username", password="Password2004?"
+            username="user example", password="Password2004?"
         )
+
         self.search_1 = UserSearchVebinar.objects.create(
             user=self.new_user, keyword="example"
         )
@@ -65,13 +66,13 @@ class SearchViewTest(APITestCase):
     def test_search_history(self):
         self.client.force_login(self.new_user)
         response = self.client.get(
-            reverse("search-history", kwargs={"user_id": self.search_1.id})
+            reverse("search-history", kwargs={"user_id": self.new_user.id})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_search_history(self):
         self.client.force_login(self.new_user)
         response = self.client.delete(
-            reverse("search-history-delete", kwargs={"user_id": self.search_1.id})
+            reverse("search-history-delete", kwargs={"user_id": self.new_user.id})
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
